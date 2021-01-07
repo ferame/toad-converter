@@ -1,7 +1,9 @@
 package com.justincode.toad.converter.api;
 
+import com.justincode.toad.converter.parser.XlsParser;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +14,13 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class ApiController {
 
+    private XlsParser xlsParser;
+
+    @Autowired
+    public ApiController(XlsParser xlsParser) {
+        this.xlsParser = xlsParser;
+    }
+
     @RequestMapping(
             path = "/convert/xls/to/xml",
             method = RequestMethod.POST,
@@ -21,6 +30,7 @@ public class ApiController {
         String fileName = file.getOriginalFilename();
         try {
             Workbook workbook = WorkbookFactory.create(file.getInputStream());
+            xlsParser.parseXls(workbook);
             return fileName + workbook.getSheetName(0);
         } catch (IOException e) {
             return "Issue with file processing";
