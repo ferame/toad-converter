@@ -8,14 +8,15 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Data
-public class Product {
+public class Product { // V1A_2
     //    TODO: add a checker if it is indeed a url
     private String url;
 
     private Long id;
     private Optional<Long> barcode;
 
-    private int category;
+    // TODO: adda a check for it to be all lowercase and separated by dashes as mobile-phones
+    private String category;
 
     //  TODO: add a surround as in here: <![CDATA[Galaxy SIII]]>
     private String description;
