@@ -41,14 +41,13 @@ public class XlsParser {
         Iterator<Cell> cellIterator = row.cellIterator();
         while (cellIterator.hasNext()) {
             Cell currentCell = cellIterator.next();
-            columnsNames.put(currentCell.getStringCellValue());
+            columnsNames.add(currentCell.getStringCellValue());
         }
         return columnsNames;
     }
 
     private List<Product> getProducts(Sheet sheet, List<String> columnsNames) {
         List<Product> products = new ArrayList<>();
-        List<Map<String, String>> initialProductsParse = new ArrayList<>();
         Iterator<Row> rowIterator = sheet.iterator();
         int i = 0;
         while (rowIterator.hasNext()) {
@@ -58,7 +57,9 @@ public class XlsParser {
             } else {
                 Map<String, String> productParameters = getProductParameters(currentRow, columnsNames);
                 Map<String, String> checkedProductParameters = parametersValidator.checkProductParameters(productParameters, columnsNames);
-//                TODO: do smth
+                if (!checkedProductParameters.isEmpty()) {
+                    products.add(Product.createProduct(checkedProductParameters));
+                }
             }
         }
         return products;
@@ -70,15 +71,7 @@ public class XlsParser {
 
     //    TODO: change to return an actual Product object
     private Map<String, String> getProductParameters(Row row, List<String> columnsNames) {
-//        Long id;
-//        String url, category, description, title, manufacturer;
-//        double price;
-//        Optional<Double> oldPrice, primeCost = Optional.empty();
-//        Optional<Integer> warranty = Optional.empty();
-//        Optional<String> deliveryDate, deliveryText = Optional.empty();
-//        Optional<List<Attribute>> attributes;
-//        Optional<List<Variant>> variants;
-
+        Map<String, String> productMap = new HashMap<>();
         int index = 0;
         for (String name : columnsNames) {
             Cell cell = row.getCell(index);
@@ -86,7 +79,6 @@ public class XlsParser {
             productMap.put(name, formatter.formatCellValue(cell));
             index++;
         }
-        ;
         return productMap;
     }
 

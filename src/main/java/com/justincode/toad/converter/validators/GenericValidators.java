@@ -2,6 +2,7 @@ package com.justincode.toad.converter.validators;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -16,6 +17,20 @@ public class GenericValidators {
 
     public static boolean validateCategory(String category) {
         return Pattern.matches("^[a-z]+(-[a-z]+)*$", category);
+    }
+
+//    TODO: test this validator
+    public static boolean validateLongField(String strLong) {
+        if (strLong == null) {
+            return false;
+        }
+        try {
+            BigDecimal bd = new BigDecimal(strLong);
+            long val = bd.longValue();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean validateIntField(String strInt) {
