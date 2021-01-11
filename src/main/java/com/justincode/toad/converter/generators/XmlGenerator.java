@@ -6,19 +6,16 @@ import com.justincode.toad.converter.dao.Product;
 import com.justincode.toad.converter.dao.Variant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class XmlGenerator {
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
-
+            doc.setXmlStandalone(true);
             // root element
             Element rootElement = doc.createElement("root");
             doc.appendChild(rootElement);
@@ -51,7 +48,8 @@ public class XmlGenerator {
 
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
-            return writer.getBuffer().toString();
+            String result = writer.getBuffer().toString();
+            return result;
         } catch (ParserConfigurationException e) {
             log.error("Failed to instantiate newDocumentBuilder {}, Stack trace:{}", e.getMessage(), e.getStackTrace());
         } catch (TransformerConfigurationException e) {
@@ -76,8 +74,8 @@ public class XmlGenerator {
         }
 
         addProductParameter(doc, productElement, "category", product.getCategory());
-        addProductParameter(doc, productElement, "title", product.getTitle());
-        addProductParameter(doc, productElement, "description", product.getDescription());
+        addEscapedProductParameter(doc, productElement, "title", product.getTitle());
+        addEscapedProductParameter(doc, productElement, "description", product.getDescription());
         addProductParameter(doc, productElement, "price", String.valueOf(product.getPrice()));
 
         if (product.getOldPrice().isPresent()) {
@@ -163,5 +161,9 @@ public class XmlGenerator {
         productElement.appendChild(newElement);
     }
 
-
+    private void addEscapedProductParameter(Document doc, Element productElement, String newElementName, String newElementValue) {
+        Element escapedProductElement = doc.createElement(newElementName);
+        escapedProductElement.appendChild(doc.createCDATASection(newElementValue));
+        productElement.appendChild(escapedProductElement);
+    }
 }

@@ -29,8 +29,8 @@ public class ParametersFormatter {
                 Optional.of(formatLong(parameters.get(ColumnsNames.BARCODE.name())));
 
         String category = parameters.get(ColumnsNames.CATEGORY.name());
-        String title = wrapInCDATA(parameters.get(ColumnsNames.TITLE.name()));
-        String description = wrapInCDATA(parameters.get(ColumnsNames.DESCRIPTION.name()));
+        String title = parameters.get(ColumnsNames.TITLE.name());
+        String description = parameters.get(ColumnsNames.DESCRIPTION.name());
         Double price = formatPrice(parameters.get(ColumnsNames.PRICE.name()));
 
         Optional<Double> priceOld = parameters.get(ColumnsNames.PRICE_OLD.name()).isEmpty() ?
@@ -66,7 +66,7 @@ public class ParametersFormatter {
 
     private static Optional<List<Variant>> formatVariants(String variantsString) {
         Optional<List<Variant>> variants;
-        if(variantsString.isEmpty()){
+        if (variantsString.isEmpty()) {
             variants = Optional.empty();
         } else {
             String[] splitVariants = variantsString.substring(1, variantsString.length() - 1).split("]\\[");
@@ -111,17 +111,13 @@ public class ParametersFormatter {
         return warranty;
     }
 
-    private static String wrapInCDATA(String text) {
-        return "<![CDATA[" + text + "]]>";
-    }
-
     private static Double formatPrice(String priceString) {
         double price = Double.parseDouble(priceString);
         BigDecimal roundedPrice = new BigDecimal(price).setScale(2, RoundingMode.HALF_UP);
         return roundedPrice.doubleValue();
     }
 
-    private static Long formatLong(String longNumber){
+    private static Long formatLong(String longNumber) {
         BigDecimal bd = new BigDecimal(longNumber);
         return bd.longValue();
     }
