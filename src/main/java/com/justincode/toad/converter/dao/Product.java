@@ -1,18 +1,11 @@
 package com.justincode.toad.converter.dao;
 
-import com.justincode.toad.converter.parser.constants.ColumnsNames;
-import com.justincode.toad.converter.validators.GenericValidators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -28,9 +21,9 @@ public class Product { // V1A_2
     private String category;
 
     //  TODO: add a surround as in here: <![CDATA[Galaxy SIII]]>
-    private String description;
-    //  TODO: add a surround as in here: <![CDATA[Galaxy SIII]]>
     private String title;
+    //  TODO: add a surround as in here: <![CDATA[Galaxy SIII]]>
+    private String description;
     //  TODO: add rounding to two decimal points
     private double price;
     //  TODO: add rounding to two decimal points
@@ -53,6 +46,4 @@ public class Product { // V1A_2
 
     private Optional<List<Attribute>> attributes;
     private Optional<List<Variant>> variants;
-
-
 }
