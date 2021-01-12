@@ -87,7 +87,7 @@
 				<configuration>
 					<appName>toad-converter</appName>
 					<processTypes>
-						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* target/classes/com/justincode/toad/converter/Application</web>
+						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* com/justincode/toad/converter/Application</web>
 					</processTypes>
 				</configuration>
 			</plugin>
