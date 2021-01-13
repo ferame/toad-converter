@@ -58,7 +58,7 @@ public class GenericValidators {
     }
 
     public static boolean validateImages(String images) {
-        String[] imagesUrls = images.split(";");
+        String[] imagesUrls = images.substring(1, images.length() - 1).split(";");
         return imagesUrls.length > 0 && Arrays.stream(imagesUrls).allMatch(GenericValidators::validateUrl);
     }
 

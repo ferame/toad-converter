@@ -94,7 +94,7 @@ public class ParametersFormatter {
     }
 
     private static List<Image> formatImages(String imagesString) {
-        String[] imagesUrls = imagesString.split(";");
+        String[] imagesUrls = imagesString.substring(1, imagesString.length() - 1).split(";");
         return Arrays.stream(imagesUrls).map(Image::new).collect(Collectors.toList());
     }
 
