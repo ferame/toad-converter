@@ -36,7 +36,7 @@ public class ParametersValidator {
         List<String> productParametersNames = new ArrayList<>(productParameters.keySet());
 
         if (productParametersNames.containsAll(ExcelColumnsConstants.mandatoryColumns)) {
-            if (GenericValidators.validateIntField(productParameters.get(ColumnsNames.ID.name()))){
+            if (!productParameters.get(ColumnsNames.ID.name()).isEmpty()){
                 checkedMandatoryColumns.put(ColumnsNames.ID.name(), productParameters.get(ColumnsNames.ID.name()).trim());
             }
             if (GenericValidators.validateCategory(productParameters.get(ColumnsNames.CATEGORY.name()))){
@@ -99,7 +99,7 @@ public class ParametersValidator {
     private Map<String, String> checkDeliveryColumns(Map<String, String> productParameters) {
         Map<String, String> checkedDeliveryColumns = new HashMap<>();
         if (new ArrayList<>(productParameters.keySet()).containsAll(ExcelColumnsConstants.dateColumns)){
-            String deliveryDate = productParameters.get(ColumnsNames.DELIVERY_DATE.name()).trim();
+            String deliveryDate = productParameters.get(ColumnsNames.DELIVERY_DATE.name()).trim().replaceAll("\"","");
             String deliveryText = productParameters.get(ColumnsNames.DELIVERY_TEXT.name()).trim();
             if (deliveryDate.isEmpty() && !deliveryText.isEmpty()){
                 checkedDeliveryColumns.put(ColumnsNames.DELIVERY_DATE.name(), "");

@@ -85,6 +85,7 @@ public class GenericValidators {
     }
 
     public static boolean validateDate(String text) {
+
         if (text == null || !(text.matches("\\d{4}-[01]\\d-[0-3]\\d") || text.matches("\\d{4}/[01]\\d/[0-3]\\d")))
             return false;
         final SimpleDateFormat df;
