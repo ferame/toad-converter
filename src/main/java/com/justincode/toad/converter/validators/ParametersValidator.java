@@ -4,7 +4,10 @@ import com.justincode.toad.converter.parser.constants.ColumnsNames;
 import com.justincode.toad.converter.parser.constants.ExcelColumnsConstants;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,7 +19,7 @@ public class ParametersValidator {
         Map<String, String> checkedDeliveryColumns = checkDeliveryColumns(productParameters);
         if ((checkedMandatoryColumns.size() == ExcelColumnsConstants.mandatoryColumns.size())
                 && (checkedOptionalColumns.size() == getPresentOptionalColumns(productParameters).size())
-                && (checkedDeliveryColumns.size() == ExcelColumnsConstants.dateColumns.size())){
+                && (checkedDeliveryColumns.size() == ExcelColumnsConstants.dateColumns.size())) {
             checkedProductParameters.putAll(checkedMandatoryColumns);
             checkedProductParameters.putAll(checkedOptionalColumns);
             checkedProductParameters.putAll(checkedDeliveryColumns);
@@ -26,7 +29,7 @@ public class ParametersValidator {
 
     private Map<String, String> getPresentOptionalColumns(Map<String, String> productParameters) {
         return productParameters.entrySet().stream().filter(entry ->
-            !entry.getValue().isEmpty() && ExcelColumnsConstants.optionalColumns.contains(entry.getKey())
+                !entry.getValue().isEmpty() && ExcelColumnsConstants.optionalColumns.contains(entry.getKey())
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
@@ -36,28 +39,28 @@ public class ParametersValidator {
         List<String> productParametersNames = new ArrayList<>(productParameters.keySet());
 
         if (productParametersNames.containsAll(ExcelColumnsConstants.mandatoryColumns)) {
-            if (!productParameters.get(ColumnsNames.ID.name()).isEmpty()){
+            if (!productParameters.get(ColumnsNames.ID.name()).isEmpty()) {
                 checkedMandatoryColumns.put(ColumnsNames.ID.name(), productParameters.get(ColumnsNames.ID.name()).trim());
             }
-            if (GenericValidators.validateCategory(productParameters.get(ColumnsNames.CATEGORY.name()))){
+            if (GenericValidators.validateCategory(productParameters.get(ColumnsNames.CATEGORY.name()))) {
                 checkedMandatoryColumns.put(ColumnsNames.CATEGORY.name(), productParameters.get(ColumnsNames.CATEGORY.name()).trim());
             }
-            if (!productParameters.get(ColumnsNames.TITLE.name()).isEmpty()){
+            if (!productParameters.get(ColumnsNames.TITLE.name()).isEmpty()) {
                 checkedMandatoryColumns.put(ColumnsNames.TITLE.name(), productParameters.get(ColumnsNames.TITLE.name()).trim());
             }
-            if (!productParameters.get(ColumnsNames.DESCRIPTION.name()).isEmpty()){
+            if (!productParameters.get(ColumnsNames.DESCRIPTION.name()).isEmpty()) {
                 checkedMandatoryColumns.put(ColumnsNames.DESCRIPTION.name(), productParameters.get(ColumnsNames.DESCRIPTION.name()).trim());
             }
-            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRICE.name()))){
+            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRICE.name()))) {
                 checkedMandatoryColumns.put(ColumnsNames.PRICE.name(), productParameters.get(ColumnsNames.PRICE.name()).trim());
             }
-            if (GenericValidators.validateIntField(productParameters.get(ColumnsNames.QUANTITY.name()))){
+            if (GenericValidators.validateIntField(productParameters.get(ColumnsNames.QUANTITY.name()))) {
                 checkedMandatoryColumns.put(ColumnsNames.QUANTITY.name(), productParameters.get(ColumnsNames.QUANTITY.name()).trim());
             }
-            if (GenericValidators.validateImages(productParameters.get(ColumnsNames.IMAGES.name()))){
+            if (GenericValidators.validateImages(productParameters.get(ColumnsNames.IMAGES.name()))) {
                 checkedMandatoryColumns.put(ColumnsNames.IMAGES.name(), productParameters.get(ColumnsNames.IMAGES.name()).trim());
             }
-            if (!productParameters.get(ColumnsNames.MANUFACTURER.name()).isEmpty()){
+            if (!productParameters.get(ColumnsNames.MANUFACTURER.name()).isEmpty()) {
                 checkedMandatoryColumns.put(ColumnsNames.MANUFACTURER.name(), productParameters.get(ColumnsNames.MANUFACTURER.name()).trim());
             }
         }
@@ -70,20 +73,20 @@ public class ParametersValidator {
         List<String> productParametersNames = new ArrayList<>(productParameters.keySet());
 
         if (productParametersNames.containsAll(ExcelColumnsConstants.optionalColumns)) {
-            if (GenericValidators.validateUrl(productParameters.get(ColumnsNames.URL.name()))){
+            if (GenericValidators.validateUrl(productParameters.get(ColumnsNames.URL.name()))) {
                 checkedOptionalColumns.put(ColumnsNames.URL.name(), productParameters.get(ColumnsNames.URL.name()).trim());
             }
-            if (GenericValidators.validateLongField(productParameters.get(ColumnsNames.BARCODE.name()))){
+            if (GenericValidators.validateLongField(productParameters.get(ColumnsNames.BARCODE.name()))) {
                 checkedOptionalColumns.put(ColumnsNames.BARCODE.name(), productParameters.get(ColumnsNames.BARCODE.name()).trim());
             }
-            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRICE_OLD.name()))){
+            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRICE_OLD.name()))) {
                 checkedOptionalColumns.put(ColumnsNames.PRICE_OLD.name(), productParameters.get(ColumnsNames.PRICE_OLD.name()).trim());
             }
-            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRIME_COST.name()))){
+            if (GenericValidators.validateNumericField(productParameters.get(ColumnsNames.PRIME_COST.name()))) {
                 checkedOptionalColumns.put(ColumnsNames.PRIME_COST.name(), productParameters.get(ColumnsNames.PRIME_COST.name()).trim());
             }
             if (GenericValidators.validateIntField(productParameters.get(ColumnsNames.WARRANTY.name())) ||
-                    productParameters.get(ColumnsNames.WARRANTY.name()).equalsIgnoreCase("-")){
+                    productParameters.get(ColumnsNames.WARRANTY.name()).equalsIgnoreCase("-")) {
                 checkedOptionalColumns.put(ColumnsNames.WARRANTY.name(), productParameters.get(ColumnsNames.WARRANTY.name()).trim());
             }
             if (GenericValidators.validateAttributes(productParameters.get(ColumnsNames.ATTRIBUTES.name()))) {
@@ -98,13 +101,20 @@ public class ParametersValidator {
 
     private Map<String, String> checkDeliveryColumns(Map<String, String> productParameters) {
         Map<String, String> checkedDeliveryColumns = new HashMap<>();
-        if (new ArrayList<>(productParameters.keySet()).containsAll(ExcelColumnsConstants.dateColumns)){
-            String deliveryDate = productParameters.get(ColumnsNames.DELIVERY_DATE.name()).trim().replaceAll("\"","");
+
+        if (new ArrayList<>(productParameters.keySet()).containsAll(ExcelColumnsConstants.dateColumns)) {
+
+            String deliveryDate = productParameters.get(ColumnsNames.DELIVERY_DATE.name())
+                    .trim()
+                    .replaceAll("\"", "")
+                    .replaceAll("/", "-");
+
             String deliveryText = productParameters.get(ColumnsNames.DELIVERY_TEXT.name()).trim();
-            if (deliveryDate.isEmpty() && !deliveryText.isEmpty()){
+
+            if (deliveryDate.isEmpty() && !deliveryText.isEmpty()) {
                 checkedDeliveryColumns.put(ColumnsNames.DELIVERY_DATE.name(), "");
                 checkedDeliveryColumns.put(ColumnsNames.DELIVERY_TEXT.name(), deliveryText);
-            } else if (!deliveryDate.isEmpty() && GenericValidators.validateDate(deliveryDate)){
+            } else if (!deliveryDate.isEmpty() && GenericValidators.validateDate(deliveryDate)) {
                 checkedDeliveryColumns.put(ColumnsNames.DELIVERY_DATE.name(), deliveryDate);
                 checkedDeliveryColumns.put(ColumnsNames.DELIVERY_TEXT.name(), deliveryText);
             }
