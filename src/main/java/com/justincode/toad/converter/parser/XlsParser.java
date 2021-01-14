@@ -2,6 +2,7 @@ package com.justincode.toad.converter.parser;
 
 import com.justincode.toad.converter.dao.Product;
 import com.justincode.toad.converter.formatters.ParametersFormatter;
+import com.justincode.toad.converter.parser.constants.ColumnsNames;
 import com.justincode.toad.converter.parser.constants.ExcelColumnsConstants;
 import com.justincode.toad.converter.validators.ParametersValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class XlsParser {
         int i = 0;
         while (rowIterator.hasNext()) {
             Row currentRow = rowIterator.next();
-            if (isEmptyCell(currentRow.getCell(0))) {
+            if (isEmptyCell(currentRow.getCell(columnsNames.indexOf(ColumnsNames.ID.name())))) {
                 log.info("Row " + i + " is empty");
             } else {
                 Map<String, String> productParameters = getProductParameters(currentRow, columnsNames);
