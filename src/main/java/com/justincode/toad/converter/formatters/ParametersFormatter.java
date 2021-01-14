@@ -19,49 +19,67 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ParametersFormatter {
     public static Product createProduct(Map<String, String> parameters) {
-        Optional<String> url = parameters.get(ColumnsNames.URL.name()).isEmpty() ?
-                Optional.empty() : Optional.of(parameters.get(ColumnsNames.URL.name()));
+
+        Optional<String> url = isValuePresent(parameters, ColumnsNames.URL) ?
+                Optional.of(parameters.get(ColumnsNames.URL.name())) :
+                Optional.empty();
 
         Long id = Long.parseLong(parameters.get(ColumnsNames.ID.name()));
 
-        Optional<Long> barcode = parameters.get(ColumnsNames.BARCODE.name()).isEmpty() ?
-                Optional.empty() :
-                Optional.of(formatLong(parameters.get(ColumnsNames.BARCODE.name())));
+        Optional<Long> barcode = isValuePresent(parameters, ColumnsNames.BARCODE) ?
+                Optional.of(formatLong(parameters.get(ColumnsNames.BARCODE.name()))) :
+                Optional.empty();
 
         String category = parameters.get(ColumnsNames.CATEGORY.name());
         String title = parameters.get(ColumnsNames.TITLE.name());
-        String description = parameters.get(ColumnsNames.DESCRIPTION.name());
+        String description = formatText(parameters.get(ColumnsNames.DESCRIPTION.name()));
         Double price = formatPrice(parameters.get(ColumnsNames.PRICE.name()));
 
-        Optional<Double> priceOld = parameters.get(ColumnsNames.PRICE_OLD.name()).isEmpty() ?
-                Optional.empty() :
-                Optional.of(formatPrice(parameters.get(ColumnsNames.PRICE_OLD.name())));
+        Optional<Double> priceOld = isValuePresent(parameters, ColumnsNames.PRICE_OLD) ?
+                Optional.of(formatPrice(parameters.get(ColumnsNames.PRICE_OLD.name()))) :
+                Optional.empty();
 
-        Optional<Double> primeCosts = parameters.get(ColumnsNames.PRIME_COST.name()).isEmpty() ?
-                Optional.empty() :
-                Optional.of(formatPrice(parameters.get(ColumnsNames.PRIME_COST.name())));
+        Optional<Double> primeCosts = isValuePresent(parameters, ColumnsNames.PRIME_COST) ?
+                Optional.of(formatPrice(parameters.get(ColumnsNames.PRIME_COST.name()))) :
+                Optional.empty();
 
         int quantity = Integer.parseInt(parameters.get(ColumnsNames.QUANTITY.name()));
 
-        Optional<String> warranty = formatWarranty(parameters.get(ColumnsNames.WARRANTY.name()));
+        Optional<String> warranty = isValuePresent(parameters, ColumnsNames.WARRANTY) ?
+                formatWarranty(parameters.get(ColumnsNames.WARRANTY.name())) :
+                Optional.empty();
 
-        Optional<String> deliveryDate = parameters.get(ColumnsNames.DELIVERY_DATE.name()).isEmpty() ?
-                Optional.empty() :
-                Optional.of(parameters.get(ColumnsNames.DELIVERY_DATE.name()));
+        Optional<String> deliveryDate = isValuePresent(parameters, ColumnsNames.DELIVERY_DATE) ?
+                Optional.of(parameters.get(ColumnsNames.DELIVERY_DATE.name())) :
+                Optional.empty();
 
-        Optional<String> deliveryText = parameters.get(ColumnsNames.DELIVERY_TEXT.name()).isEmpty() ?
-                Optional.empty() :
-                Optional.of(parameters.get(ColumnsNames.DELIVERY_TEXT.name()));
+        Optional<String> deliveryText = isValuePresent(parameters, ColumnsNames.DELIVERY_TEXT) ?
+                Optional.of(parameters.get(ColumnsNames.DELIVERY_TEXT.name())) :
+                Optional.empty();
 
         String manufacturer = parameters.get(ColumnsNames.MANUFACTURER.name());
 
         List<Image> images = formatImages(parameters.get(ColumnsNames.IMAGES.name()));
 
-        Optional<List<Attribute>> attributes = formatAttributes(parameters.get(ColumnsNames.ATTRIBUTES.name()));
+        Optional<List<Attribute>> attributes = isValuePresent(parameters, ColumnsNames.ATTRIBUTES) ?
+                formatAttributes(parameters.get(ColumnsNames.ATTRIBUTES.name())) :
+                Optional.empty();
 
-        Optional<List<Variant>> variants = formatVariants(parameters.get(ColumnsNames.VARIANTS.name()));
+        Optional<List<Variant>> variants = isValuePresent(parameters, ColumnsNames.VARIANTS) ?
+                formatVariants(parameters.get(ColumnsNames.VARIANTS.name())) :
+                Optional.empty();
 
         return new Product(url, id, barcode, category, title, description, price, priceOld, primeCosts, quantity, warranty, deliveryDate, deliveryText, manufacturer, images, attributes, variants);
+    }
+
+    private static boolean isValuePresent(Map<String, String> parameters, ColumnsNames field) {
+        return parameters.containsKey(field.name()) && !parameters.get(field.name()).isEmpty();
+    }
+
+    private static String formatText(String text) {
+        return text.startsWith("[") && text.endsWith("]") ?
+                text.substring(1, text.length() - 1) :
+                text;
     }
 
     private static Optional<List<Variant>> formatVariants(String variantsString) {
