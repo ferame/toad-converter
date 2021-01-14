@@ -24,7 +24,7 @@ public class ParametersFormatter {
                 Optional.of(parameters.get(ColumnsNames.URL.name())) :
                 Optional.empty();
 
-        Long id = Long.parseLong(parameters.get(ColumnsNames.ID.name()));
+        String id = formatText(parameters.get(ColumnsNames.ID.name()));
 
         Optional<Long> barcode = isValuePresent(parameters, ColumnsNames.BARCODE) ?
                 Optional.of(formatLong(parameters.get(ColumnsNames.BARCODE.name()))) :

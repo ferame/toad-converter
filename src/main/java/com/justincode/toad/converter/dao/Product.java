@@ -14,7 +14,7 @@ public class Product { // V1A_2
     //    TODO: add a checker if it is indeed a url
     private Optional<String> url;
 
-    private Long id;
+    private String id;
     private Optional<Long> barcode;
 
     // TODO: adda a check for it to be all lowercase and separated by dashes as mobile-phones

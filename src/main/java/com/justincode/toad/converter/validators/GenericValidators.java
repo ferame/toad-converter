@@ -85,14 +85,9 @@ public class GenericValidators {
     }
 
     public static boolean validateDate(String text) {
-        if (text == null || !(text.matches("\\d{4}-[01]\\d-[0-3]\\d") || text.matches("\\d{4}/[01]\\d/[0-3]\\d")))
+        if (text == null || !text.matches("\\d{4}-[01]\\d-[0-3]\\d"))
             return false;
-        final SimpleDateFormat df;
-        if (text.matches("\\d{4}-[01]\\d-[0-3]\\d")) {
-            df = new SimpleDateFormat("yyyy-MM-dd");
-        } else {
-            df = new SimpleDateFormat("yyyy/MM/dd");
-        }
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         df.setLenient(false);
         try {
             df.parse(text);
