@@ -59,6 +59,11 @@
 			<artifactId>commons-validator</artifactId>
 			<version>1.7</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>net.logstash.logback</groupId>-->
+<!--			<artifactId>logstash-logback-encoder</artifactId>-->
+<!--			<version>6.6</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
@@ -73,6 +78,17 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<appName>toad-converter</appName>
+					<processTypes>
+						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* com/justincode/toad/converter/Application</web>
+					</processTypes>
 				</configuration>
 			</plugin>
 		</plugins>

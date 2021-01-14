@@ -1,8 +1,9 @@
 package com.justincode.toad.converter.validators;
 
-import org.apache.commons.validator.routines.UrlValidator;
-
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -10,9 +11,12 @@ import java.util.regex.Pattern;
 
 public class GenericValidators {
     public static boolean validateUrl(String url) {
-        String[] schemes = {"http","https"}; // DEFAULT schemes = "http", "https", "ftp"
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        return urlValidator.isValid(url);
+        try {
+            new URL(url).toURI();
+        } catch (MalformedURLException | URISyntaxException exception) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean validateCategory(String category) {
@@ -58,7 +62,7 @@ public class GenericValidators {
     }
 
     public static boolean validateImages(String images) {
-        String[] imagesUrls = images.split(";");
+        String[] imagesUrls = images.substring(1, images.length() - 1).split(";");
         return imagesUrls.length > 0 && Arrays.stream(imagesUrls).allMatch(GenericValidators::validateUrl);
     }
 
@@ -81,9 +85,14 @@ public class GenericValidators {
     }
 
     public static boolean validateDate(String text) {
-        if (text == null || !text.matches("\\d{4}-[01]\\d-[0-3]\\d"))
+        if (text == null || !(text.matches("\\d{4}-[01]\\d-[0-3]\\d") || text.matches("\\d{4}/[01]\\d/[0-3]\\d")))
             return false;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        final SimpleDateFormat df;
+        if (text.matches("\\d{4}-[01]\\d-[0-3]\\d")) {
+            df = new SimpleDateFormat("yyyy-MM-dd");
+        } else {
+            df = new SimpleDateFormat("yyyy/MM/dd");
+        }
         df.setLenient(false);
         try {
             df.parse(text);

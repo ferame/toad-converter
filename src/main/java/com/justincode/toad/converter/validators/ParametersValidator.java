@@ -5,6 +5,7 @@ import com.justincode.toad.converter.parser.constants.ExcelColumnsConstants;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ParametersValidator {
@@ -13,12 +14,20 @@ public class ParametersValidator {
         Map<String, String> checkedMandatoryColumns = checkMandatoryColumns(productParameters);
         Map<String, String> checkedOptionalColumns = checkOptionalColumns(productParameters);
         Map<String, String> checkedDeliveryColumns = checkDeliveryColumns(productParameters);
-        if ((checkedMandatoryColumns.size() + checkedOptionalColumns.size() + checkedDeliveryColumns.size()) == productParameters.size()){
+        if ((checkedMandatoryColumns.size() == ExcelColumnsConstants.mandatoryColumns.size())
+                && (checkedOptionalColumns.size() == getPresentOptionalColumns(productParameters).size())
+                && (checkedDeliveryColumns.size() == ExcelColumnsConstants.dateColumns.size())){
             checkedProductParameters.putAll(checkedMandatoryColumns);
             checkedProductParameters.putAll(checkedOptionalColumns);
             checkedProductParameters.putAll(checkedDeliveryColumns);
         }
         return checkedProductParameters;
+    }
+
+    private Map<String, String> getPresentOptionalColumns(Map<String, String> productParameters) {
+        return productParameters.entrySet().stream().filter(entry ->
+            !entry.getValue().isEmpty() && ExcelColumnsConstants.optionalColumns.contains(entry.getKey())
+        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Map<String, String> checkMandatoryColumns(Map<String, String> productParameters) {
