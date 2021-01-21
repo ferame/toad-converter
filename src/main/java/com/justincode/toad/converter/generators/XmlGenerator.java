@@ -48,8 +48,7 @@ public class XmlGenerator {
 
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
-            String result = writer.getBuffer().toString();
-            return result;
+            return writer.getBuffer().toString();
         } catch (ParserConfigurationException e) {
             log.error("Failed to instantiate newDocumentBuilder {}, Stack trace:{}", e.getMessage(), e.getStackTrace());
         } catch (TransformerConfigurationException e) {
@@ -64,7 +63,7 @@ public class XmlGenerator {
         Element productElement = doc.createElement("product");
 
         if (product.getUrl().isPresent()) {
-            addProductParameter(doc, productElement, "url", product.getUrl().get());
+            addEscapedProductParameter(doc, productElement, "url", product.getUrl().get());
         }
 
         addProductParameter(doc, productElement, "id", product.getId().toString());
@@ -73,7 +72,7 @@ public class XmlGenerator {
             addProductParameter(doc, productElement, "barcode", product.getBarcode().get().toString());
         }
 
-        addProductParameter(doc, productElement, "category", product.getCategory());
+        addEscapedProductParameter(doc, productElement, "category", product.getCategory());
         addEscapedProductParameter(doc, productElement, "title", product.getTitle());
         addEscapedProductParameter(doc, productElement, "description", product.getDescription());
         addProductParameter(doc, productElement, "price", String.valueOf(product.getPrice()));
@@ -100,7 +99,7 @@ public class XmlGenerator {
             addProductParameter(doc, productElement, "delivery_text", product.getDeliveryText().get());
         }
 
-        addProductParameter(doc, productElement, "manufacturer", String.valueOf(product.getManufacturer()));
+        addEscapedProductParameter(doc, productElement, "manufacturer", String.valueOf(product.getManufacturer()));
 
         addProductImages(doc, productElement, product.getImages());
 
@@ -132,6 +131,7 @@ public class XmlGenerator {
         productElement.appendChild(variantsElement);
     }
 
+//    TODO: add escape for attribute
     private void addAttributes(Document doc, Element productElement, List<Attribute> attributes) {
         Element attributesElement = doc.createElement("attributes");
         for (Attribute attribute : attributes) {
@@ -139,17 +139,18 @@ public class XmlGenerator {
             Attr title = doc.createAttribute("title");
             title.setValue(attribute.getTitle());
             attributeElement.setAttributeNode(title);
-            attributeElement.appendChild(doc.createTextNode(attribute.getValue()));
+            attributeElement.appendChild(doc.createCDATASection(attribute.getValue()));
             attributesElement.appendChild(attributeElement);
         }
         productElement.appendChild(attributesElement);
     }
 
+//    TODO: add escape for image
     private void addProductImages(Document doc, Element productElement, List<Image> images) {
         Element imagesElement = doc.createElement("images");
         for (Image image : images) {
             Element imageElement = doc.createElement("image");
-            imageElement.appendChild(doc.createTextNode(image.getUrl()));
+            imageElement.appendChild(doc.createCDATASection(image.getUrl()));
             imagesElement.appendChild(imageElement);
         }
         productElement.appendChild(imagesElement);
