@@ -1,5 +1,6 @@
 package com.justincode.toad.converter.api;
 
+import com.justincode.toad.converter.clients.AmazonClient;
 import com.justincode.toad.converter.dao.Product;
 import com.justincode.toad.converter.generators.XmlGenerator;
 import com.justincode.toad.converter.parser.XlsParser;
@@ -19,11 +20,13 @@ public class ApiController {
 
     private final XlsParser xlsParser;
     private final XmlGenerator xmlGenerator;
+    private final AmazonClient amazonClient;
 
     @Autowired
-    public ApiController(XlsParser xlsParser, XmlGenerator xmlGenerator) {
+    public ApiController(XlsParser xlsParser, XmlGenerator xmlGenerator, AmazonClient amazonClient) {
         this.xlsParser = xlsParser;
         this.xmlGenerator = xmlGenerator;
+        this.amazonClient = amazonClient;
     }
 
     @RequestMapping(
@@ -41,5 +44,24 @@ public class ApiController {
         } catch (IOException e) {
             return "Issue with file processing";
         }
+    }
+
+    @RequestMapping(
+            path = "/uploadFile",
+            method = RequestMethod.POST
+//            consumes = MediaType.APPLICATION_XML_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String uploadFile(@RequestPart(value = "file") MultipartFile file) {
+        return this.amazonClient.uploadFile(file);
+    }
+
+    @RequestMapping(
+            path = "/deleteFile",
+            method = RequestMethod.DELETE
+//            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String deleteFile(@RequestPart(value = "url") String fileUrl) {
+        return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
 }

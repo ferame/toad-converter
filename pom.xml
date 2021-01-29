@@ -59,7 +59,13 @@
 			<artifactId>commons-validator</artifactId>
 			<version>1.7</version>
 		</dependency>
-<!--		<dependency>-->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.942</version>
+		</dependency>
+
+		<!--		<dependency>-->
 <!--			<groupId>net.logstash.logback</groupId>-->
 <!--			<artifactId>logstash-logback-encoder</artifactId>-->
 <!--			<version>6.6</version>-->
