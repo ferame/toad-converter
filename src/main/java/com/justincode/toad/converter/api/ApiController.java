@@ -4,11 +4,17 @@ import com.justincode.toad.converter.clients.AmazonClient;
 import com.justincode.toad.converter.dao.Product;
 import com.justincode.toad.converter.generators.XmlGenerator;
 import com.justincode.toad.converter.parser.XlsParser;
+import io.swagger.annotations.ApiParam;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -47,7 +53,7 @@ public class ApiController {
     }
 
     @RequestMapping(
-            path = "/uploadFile",
+            path = "/bucket/upload/file",
             method = RequestMethod.POST
 //            consumes = MediaType.APPLICATION_XML_VALUE,
 //            produces = MediaType.APPLICATION_JSON_VALUE
@@ -57,11 +63,10 @@ public class ApiController {
     }
 
     @RequestMapping(
-            path = "/deleteFile",
+            path = "/bucket/delete/file",
             method = RequestMethod.DELETE
-//            produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public String deleteFile(@RequestPart(value = "url") String fileUrl) {
+    public String deleteFile(@ApiParam("Path to the file") @RequestBody String fileUrl) {
         return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
 }
