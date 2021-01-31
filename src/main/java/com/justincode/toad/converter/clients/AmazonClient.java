@@ -4,9 +4,8 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AmazonClient {
     private AmazonS3 s3Client;
@@ -78,5 +80,25 @@ public class AmazonClient {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         return "Successfully deleted";
+    }
+
+    public List<String> listFilesFromS3Bucket() {
+        ListObjectsRequest listObjectsRequest =
+                new ListObjectsRequest()
+                        .withBucketName(bucketName);
+//                        .withPrefix("/");
+        ObjectListing objects = s3Client.listObjects(listObjectsRequest);
+        return objects.getObjectSummaries().stream().map(S3ObjectSummary::getKey).map(this::createObjectURL).collect(Collectors.toList());
+    }
+
+    private String createObjectURL(String objectName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("https://");
+        stringBuilder.append(bucketName);
+        stringBuilder.append(".s3.");
+        stringBuilder.append(region);
+        stringBuilder.append(".amazonaws.com/");
+        stringBuilder.append(objectName);
+        return stringBuilder.toString();
     }
 }

@@ -69,4 +69,12 @@ public class ApiController {
     public String deleteFile(@ApiParam("Path to the file") @RequestBody String fileUrl) {
         return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
+
+    @RequestMapping(
+        path = "/bucket/list/files",
+        method = RequestMethod.GET
+    )
+    public List<String> listFiles() {
+        return this.amazonClient.listFilesFromS3Bucket();
+    }
 }
